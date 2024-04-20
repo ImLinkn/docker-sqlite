@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  sqlite:
+    image: alpine:latest
+    command: sh -c "apk --no-cache add sqlite && sqlite3 && tail -f /dev/null"
+    container_name: sqlite
+  sqlitebrowser:
+    image: linuxserver/sqlitebrowser
+    container_name: sqlitebrowser
+    depends_on:
+      - sqlite
+    environment:
+      - ENABLE_UWSGI=true
+      - PGID=1000
+      - PUID=1000
+      - TZ=UTC
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../exports:/data/db
+volumes:
+  exports:
+    external: true
